@@ -55,7 +55,7 @@ def display_page_and_get_input(pdf_path, page_num, prompt_text, display_page=Tru
         return user_input
         
     except Exception as e:
-        print(f"�� Error displaying page {page_num + 1}: {e}")
+        print(f"🚨 Error displaying page {page_num + 1}: {e}")
         return None
 
 
