@@ -31,22 +31,24 @@ def find_single_pdf(prelatex_pdf_dir):
         return None
     return pdfs[0]
 
-def display_page_and_get_input(pdf_path, page_num, prompt_text):
+def display_page_and_get_input(pdf_path, page_num, prompt_text, display_page=True):
     """Displays a specific page of a PDF and gets user input."""
     try:
         doc = fitz.open(pdf_path)
         page = doc.load_page(page_num)
         
-        # Render page to a pixmap (an image)
-        pix = page.get_pixmap()
-        img_data = pix.tobytes("png")
-        image = Image.open(io.BytesIO(img_data))
-        
-        # Show the image using the default system viewer
-        image.show()
+        if display_page:
+            # Render page to a pixmap (an image)
+            pix = page.get_pixmap()
+            img_data = pix.tobytes("png")
+            image = Image.open(io.BytesIO(img_data))
+            
+            # Show the image using the default system viewer
+            image.show()
         
         print("\n" + "="*50)
-        print(f"📄 Displaying Page {page_num + 1}")
+        if display_page:
+            print(f"📄 Displaying Page {page_num + 1}")
         print("="*50)
         user_input = input(prompt_text + " ")
         doc.close()
@@ -109,10 +111,14 @@ def main():
             
             # This loop allows retrying a page if the transcription is bad
             while not page_approved:
+                # On the first run, the PDF page is already open from the general
+                # instructions prompt. We don't need to open it again, so we set
+                # display_page to False.
                 specific_instructions = display_page_and_get_input(
                     pdf_path,
                     i,
-                    f"Are there any special instructions for this specific image (Page {page_num})?\n(Press Enter to skip):"
+                    f"Are there any special instructions for this specific image (Page {page_num})?\n(Press Enter to skip):",
+                    display_page=i != 0
                 )
                 
                 # --- First LLM Interaction: Transcription ---
