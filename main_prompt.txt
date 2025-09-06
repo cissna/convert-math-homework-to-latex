@@ -1,0 +1,24 @@
+Note that this whole message is dictated so there might be phonetic errors Rather than the normal orthographic ones:
+If anything doesn't make sense before starting, ask clarification before outputted any code. If there are minor things you think should be changed or better specified, output code, but after outputting the code, explain these changes/clarifications in detail.
+
+
+Here’s what a Python script will do:
+
+It takes in a PDF that is located in the same folder as the script. If there are multiple PDFs in the folder, it will fail and say “delete old pdfs”.
+After that, it takes that PDF as the PDF it’s going to use, and then opens the first page of that PDF, showing it to the user.
+It asks, “ are there any special instructions you have for the LLM regarding your PDF as a hole? This first image is displayed as an example to remind you.”
+Then it asks, “Are there any special instructions to deal with this specific image?” This will be a step that is repeated for all images in the PDF.
+Here, there needs to be some sort of interface that can display an image and get user text, ideally in one window, but if not, just in the terminal is fine.
+Then it will copy the image to clipboard and say "image copied to clipboard, Hit enter once you have pasted it into LLM.”
+Then, it will copy the following text to clipboard:
+“Look over the math problem in this picture and more importantly the work to solve that problem. If you see any glaring issues, tell the user that and don’t do anything else. Just so they know there is a mistake. Otherwise, don’t tell the user anything and just output the entire problem and solution converted into LaTeX. It is imperative that you copy the text EXACTLY AS THE USER WROTE IT, inferring from context what they meant when necessary but never making big leaps or fixing anything more complicated than a misspelling of a word (anything worse should cause you to not output latex and instead tell the user what’s wrong)” + f”\nGeneral instructions from the user that may not apply to this image, but likely do:\n{general_instructions}” if general_instructions else ““ + f”Specific instructions from the user about this particular image: {specific_instructions}” if specific_instructions else ““
+Then tell the user to paste it into the LLM and Wait for a response. Also tell them to provide the response, and then store the response in a variable.
+Then, copy the image to the clipboard again and tell the user to paste it into a new chat. Once they verify that they have done that, then copy the text f”are there any significant wording changes from the original image that I wrote and the latex text? I don’t want my original wording to be lost, but it’s fine if something very small like a typo was replaced”
+Tell the user to hit enter if there were no significant deviations, and try the previous prompt again if there were problems. Tell the user to enter any key (but not no key) If something went wrong, hit enter and then do the previous step again (copy the image to clipboard and the prompt asking it to transcribe stuff to LaTeX so the user can try it again). Then store the LaTeX output that the user pastes back in, overwriting the previous output of the user indicated they didn’t like.
+Repeat this for every page in the PDF, storing each LLM output in a list.
+At the end, once all the text has been transcribed to LaTeX, make one huge prompt for the user to paste back in. It should combine all the individual outputs, separated by a line break, triple backticks, a line break, the text “next page”, a line break, triple backticks, and another line break, with triple backticks at the every end. Before it put “I got all of these latex outputs from an LLM, can you combine them into one cohesive document, but without changing any of the actual text, just lumping them together so it will render on overleaf”, then a line break, then “first page:” then a line break, then triple backticks, then a line break.
+Tell the user to paste back in the response it gets. And then make one new final prompt to copy to the user that takes all of those individual outputs (like in the prompt above) but compares them to the one big output and says “Were there any changes?” Allow the user to indicate if something failed. If it did, then redo the last step. However, if it didn’t, just copy the final latex content to clipboard and exit the program from here.
+Two general notes:
+
+I made a copy_pdf_image_to_clipboard(page_index, pdf_path), import it with `from pdf_image_clipboard import copy_pdf_image_to_clipboard, PDFImageCopyError`, and assume it works
+Whenever I say paste back to the program, that should actually mean, tell the user to hit enter once they've copied it and paste with Piperclip
