@@ -181,10 +181,10 @@ def main():
         # Final Verification
         verification_prompt = (
             "Were there any changes between the 'INDIVIDUAL' blocks and the 'COMBINED' document below?\n\n"
-            "--- INDIVIDUAL ---\n"
-            f"{final_prompt}\n\n"
-            "--- COMBINED ---\n"
-            f"{final_latex}"
+            '--- INDIVIDUAL ---\n"""\n'
+            f'{final_prompt}\n"""\n\n'
+            "--- COMBINED ---\n```\n"
+            f"{final_latex}\n```"
         )
         pyperclip.copy(verification_prompt)
         print("\n📋 Final verification prompt copied to clipboard.")
