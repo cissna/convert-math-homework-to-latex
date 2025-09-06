@@ -59,6 +59,20 @@ def display_page_and_get_input(pdf_path, page_num, prompt_text):
 
 def main():
     """Main function to run the PDF processing workflow."""
+    # --- Clipboard check before script ---
+    prior_clipboard = None
+    try:
+        prior_content = pyperclip.paste()
+        if prior_content and prior_content.strip():
+            # Truncate to 300 characters if needed
+            short_clipboard = prior_content[:300]
+            suffix = "..." if len(prior_content) > 300 else ""
+            print(f'Saved clipboard from before script: "{short_clipboard}{suffix}"')
+            prior_clipboard = prior_content
+    except Exception as e:
+        print(f"Warning: could not read clipboard at start: {e}")
+        prior_clipboard = None
+
     # Always use path relative to the script file
     script_dir = os.path.dirname(os.path.abspath(__file__))
     prelatex_pdf_dir = os.path.join(script_dir, "prelatex-pdf")
@@ -202,8 +216,21 @@ def main():
         else:
             print("🔄 Retrying final combination step...")
             
-    print("✅ Program finished.")
 
+    # --- Restore clipboard logic before exiting ---
+    if prior_clipboard is not None:
+        print()
+        choice = input(
+            "Once you are done with the full latex document, hit enter to retrieve your clipboard from before the script execution.\n"
+            "If you wish to override your old clipboard with the latex text, enter 'override': "
+        ).strip().lower()
+        if choice == "override":
+            print("Clipboard override chosen. Exiting latex saved to clipboard instead of prior clipboard.")
+        else:
+            pyperclip.copy(prior_clipboard)
+            print("Restored your clipboard from before the script execution.")
+
+    print("✅ Program finished.")
 
 if __name__ == "__main__":
     main()
