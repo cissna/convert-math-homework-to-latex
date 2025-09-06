@@ -6,6 +6,7 @@ import pyperclip
 import fitz  # PyMuPDF
 from PIL import Image
 import io
+import os
 
 # --- User-Provided Function ---
 # Ensure the file 'pdf_image_clipboard.py' is in the same directory.
@@ -18,14 +19,14 @@ except ImportError:
 # -----------------------------
 
 
-def find_single_pdf():
-    """Finds a single PDF in the current directory."""
-    pdfs = glob.glob("*.pdf")
+def find_single_pdf(prelatex_pdf_dir):
+    """Finds a single PDF in the given 'prelatex-pdf' directory."""
+    pdfs = glob.glob(os.path.join(prelatex_pdf_dir, "*.pdf"))
     if len(pdfs) == 0:
-        print("❌ Error: No PDF file found in this folder.")
+        print("❌ Error: No PDF file found in the 'prelatex-pdf' folder.")
         return None
     if len(pdfs) > 1:
-        print("❌ Error: Multiple PDFs found. Please delete old PDFs so there is only one.")
+        print("❌ Error: Multiple PDFs found in 'prelatex-pdf'. Please delete old PDFs so there is only one.")
         print("Found:", ", ".join(pdfs))
         return None
     return pdfs[0]
@@ -58,7 +59,11 @@ def display_page_and_get_input(pdf_path, page_num, prompt_text):
 
 def main():
     """Main function to run the PDF processing workflow."""
-    pdf_path = find_single_pdf()
+    # Always use path relative to the script file
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    prelatex_pdf_dir = os.path.join(script_dir, "prelatex-pdf")
+    os.makedirs(prelatex_pdf_dir, exist_ok=True)
+    pdf_path = find_single_pdf(prelatex_pdf_dir)
     if not pdf_path:
         sys.exit(1)
 
