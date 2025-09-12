@@ -8,6 +8,14 @@ from PIL import Image
 import io
 import os
 
+# Redefine print to default to flush=True
+import builtins
+_print = builtins.print
+def print(*args, **kwargs):
+    if 'flush' not in kwargs:
+        kwargs['flush'] = True
+    _print(*args, **kwargs)
+
 # --- User-Provided Function ---
 # Ensure the file 'pdf_image_clipboard.py' is in the same directory.
 try:
