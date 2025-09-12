@@ -170,7 +170,7 @@ def main():
 
                 input("   Paste it into a new chat and press Enter...")
 
-                prompt_2 = "are there any significant wording changes from the original image that I wrote and the latex text? I don’t want my original wording to be lost, but it’s fine if something very small like a typo was replaced"
+                prompt_2 = f"are there any significant wording changes from the original image that I wrote and the latex text? I don't want my original wording to be lost, but it's fine if something very small like a typo was replaced\n\nLaTeX:\n```\n{latex_output}\n```"
                 pyperclip.copy(prompt_2)
                 print("\n📋 Verification prompt copied to clipboard.")
                 print("   Paste this prompt into the LLM and review its answer.")
