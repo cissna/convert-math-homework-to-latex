@@ -139,13 +139,24 @@ def main():
 
                 input("   Hit Enter once you have pasted it into the LLM...")
 
+                # isaac written: (not working with gemini, it seems it's getting too caught up trying to find an error in the image)
+                # prompt_1 = (
+                #     "Look over the math problem in this picture and more importantly the work to solve that problem. "
+                #     "If you see any glaring issues, tell the user that and don’t do anything else. Just so they know there is a mistake. "
+                #     "But generally don't expect that there are any major errors. "
+                #     "Otherwise, don’t tell the user anything and just output the entire problem and solution converted into LaTeX. "
+                #     "It is imperative that you copy the text EXACTLY AS THE USER WROTE IT, "
+                #     "inferring from context what they meant when necessary but never making big leaps or fixing anything more complicated than a misspelling of a word "
+                #     "(anything worse should cause you to not output latex and instead tell the user what’s wrong)"
+                # )
+
+                # ai-generated one from the previous one trying to fix above problem:
                 prompt_1 = (
-                    "Look over the math problem in this picture and more importantly the work to solve that problem. "
-                    "If you see any glaring issues, tell the user that and don’t do anything else. Just so they know there is a mistake. "
-                    "Otherwise, don’t tell the user anything and just output the entire problem and solution converted into LaTeX. "
-                    "It is imperative that you copy the text EXACTLY AS THE USER WROTE IT, "
-                    "inferring from context what they meant when necessary but never making big leaps or fixing anything more complicated than a misspelling of a word "
-                    "(anything worse should cause you to not output latex and instead tell the user what’s wrong)"
+                    "First, transcribe the math problem and the solution from the image into LaTeX. "
+                    "It is crucial that you copy the content EXACTLY as it is written, preserving the user's original steps, notation, and exact language. "
+                    "Once you have provided the complete and exact transcription, review the work for any logical or mathematical errors. "
+                    "If you find any mistakes in the reasoning, calculations, or the final answer, explain them clearly to the user. "
+                    "LaTeX should be between triple backticks for clarity"
                 )
                 if general_instructions:
                     prompt_1 += f"\n\nGeneral instructions from the user that may not apply to this image, but likely do:\n{general_instructions}"
