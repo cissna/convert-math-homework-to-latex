@@ -158,7 +158,10 @@ def main():
                     "   Paste it into the LLM, wait for a response, then copy the FULL LaTeX response to your clipboard and hit Enter here..."
                 )
                 
-                latex_output = pyperclip.paste()
+                latex_output = pyperclip.paste().strip()
+                if latex_output.count('\n\n') == 2 * latex_output.count('\n'):
+                    latex_output = latex_output.replace('\n\n', '\n')
+
 
                 # --- Second LLM Interaction: Verification ---
                 try:
