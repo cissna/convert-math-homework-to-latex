@@ -241,10 +241,113 @@ def main():
             )
 
             if final_user_approval == "":
-                pyperclip.copy(final_latex)
-                print("\n\n✨ Success! The final combined LaTeX has been copied to your clipboard.")
+
+                print("\n\n🎉 All pages have been processed and combined! Now applying consistent formatting...")
+
+
+
+                # 4. Formatting consistency step
+
+                formatting_approved = False
+
+                while not formatting_approved:
+
+                    formatting_prompt = (
+
+                        "The LaTeX document below has been created from multiple pages of handwritten math homework. "
+
+                        "The content is correct but the formatting styles may be inconsistent between pages. "
+
+                        "Please improve the formatting consistency throughout the document without changing any of the actual content, "
+
+                        "mathematical expressions, or wording. Focus on making the styling uniform (e.g., theorem environments, "
+
+                        "mathematical notation style, spacing, etc.) while preserving all the original text and logic.\n\n"
+
+                        f"LaTeX Document:\n```\n{final_latex}\n```\n\n"
+
+                        "Output only the formatted LaTeX document with consistent styling."
+
+                    )
+
+
+
+                    pyperclip.copy(formatting_prompt)
+
+                    print("\n📋 Formatting consistency prompt copied to clipboard.")
+
+                    input("    Paste it into the LLM, copy the formatted response, and then press Enter...")
+
+
+
+                    formatted_latex = pyperclip.paste()
+
+
+
+                    # Formatting verification
+
+                    formatting_verification_prompt = (
+
+                        "Compare the original LaTeX document with the formatted version below. "
+
+                        "Check that all content, wording, and mathematical expressions are identical, "
+
+                        "and only the formatting/styling has been made more consistent.\n\n"
+
+                        "--- ORIGINAL ---\n"
+
+                        f"```\n{final_latex}\n```\n\n"
+
+                        "--- FORMATTED ---\n"
+
+                        f"```\n{formatted_latex}\n```\n\n"
+
+                        "Were there any unwanted changes to the content, wording, or mathematical expressions? "
+
+                        "Or were only formatting and styling improvements made?"
+
+                    )
+
+
+
+                    pyperclip.copy(formatting_verification_prompt)
+
+                    print("\n📋 Formatting verification prompt copied to clipboard.")
+
+                    print("    Paste this into the LLM to verify only formatting was changed.")
+
+
+
+                    formatting_user_approval = input(
+
+                        "    --> If only formatting was improved and content is preserved, just hit Enter.\n"
+
+                        "    --> If content was changed or there are issues, enter ANY character and then hit Enter to retry formatting: "
+
+                    )
+
+
+
+                    if formatting_user_approval == "":
+
+                        pyperclip.copy(formatted_latex)
+
+                        print("\n\n✨ Success! The final formatted LaTeX has been copied to your clipboard.")
+
+                        final_latex = formatted_latex
+
+                        formatting_approved = True
+
+                    else:
+
+                        print("🔄 Retrying formatting consistency step...")
+
+
+
                 final_combination_approved = True
+
             else:
+
                 print("🔄 Retrying final combination step...")
                 
 
