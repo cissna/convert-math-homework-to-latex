@@ -219,11 +219,40 @@ def main():
             )
 
             if final_user_approval == "":
-                pyperclip.copy(final_latex)
-                print("\n\n✨ Success! The final combined LaTeX has been copied to your clipboard.")
-                final_combination_approved = True
+                print("\n✅ Combination successful. Now for the final formatting step.")
+                final_combination_approved = True  # Exit the combination loop
             else:
                 print("🔄 Retrying final combination step...")
+
+        # 4. Final formatting and approval
+        final_formatting_approved = False
+        while not final_formatting_approved:
+            formatting_prompt = (
+                "You will be given a LaTeX document that has been combined from multiple pages. "
+                "Your task is to format it consistently so it looks like it was written by a single person. "
+                "You MUST NOT change any of the wording, mathematical logic, or variable names. "
+                "Your only job is to adjust the STYLE of the math presentation (e.g., spacing, alignment, etc.) for a cohesive look. "
+                "Here is the document:\n\n"
+                f"```latex\n{final_latex}\n```"
+            )
+            pyperclip.copy(formatting_prompt)
+            print("\n📋 Final formatting prompt copied to clipboard.")
+            input("   Paste it into the LLM, copy the full response, and then press Enter...")
+
+            formatted_latex = pyperclip.paste()
+
+            # Ask user to approve the formatted version
+            formatting_approval = input(
+                "   --> If the formatted document is correct and no logic was changed, just hit Enter.\n"
+                "   --> If the LLM changed the content, enter ANY character and then hit Enter to retry formatting: "
+            )
+
+            if formatting_approval == "":
+                pyperclip.copy(formatted_latex)
+                print("\n\n✨ Success! The final formatted LaTeX has been copied to your clipboard.")
+                final_formatting_approved = True
+            else:
+                print("🔄 Retrying final formatting step...")
                 
 
         # --- Restore clipboard logic before exiting ---
